@@ -10,9 +10,9 @@ function App() {
   return (
     <Router>
       <Header/>
-      <main className="main">
-          <AppRouters/>
-      </main>
+        <main className="main">
+            <AppRouters/>
+        </main>
       <Footer/>
     </Router>
   );
