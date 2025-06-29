@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Button } from "primereact/button";
 import { increment, decrement } from "../store";
 
+
 export default function Home() {
   const count = useSelector((state:any) => state.counter.value);
   const dispatch = useDispatch();
@@ -15,6 +16,7 @@ export default function Home() {
         <span className="text-2xl font-semibold">{count}</span>
         <Button label="Increment" icon="pi pi-plus" className="p-button-success" onClick={() => dispatch(increment())} />
       </div>
+      
     </div>
   );
 }

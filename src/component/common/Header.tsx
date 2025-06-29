@@ -4,7 +4,8 @@ import { Menubar } from "primereact/menubar";
 import { InputText } from "primereact/inputtext";
 import { Badge } from "primereact/badge";
 import { Avatar } from "primereact/avatar";
-
+import { Button } from "primereact/button";
+import ThemeSwitcher from "../ThemeSwitcher";
 export default function Header() {
   const location = useLocation();
 
@@ -108,6 +109,7 @@ export default function Header() {
   );
   const end = (
     <div className='flex align-items-center gap-2'>
+      <ThemeSwitcher/>
       <InputText
         placeholder='Search'
         type='text'
@@ -117,6 +119,7 @@ export default function Header() {
         image='https://primefaces.org/cdn/primereact/images/avatar/amyelsner.png'
         shape='circle'
       />
+      <Button icon="pi pi-palette" rounded />
     </div>
   );
 
