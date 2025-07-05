@@ -63,6 +63,13 @@ export default function Header() {
           template: itemRenderer,
         },
         {
+          label: "File Upload",
+          icon: "pi pi-upload",
+          url: "/file-upload",
+          shortcut: "⌘+U",
+          template: itemRenderer,
+        },
+        {
           label: "UI Kit",
           icon: "pi pi-pencil",
           shortcut: "⌘+U",

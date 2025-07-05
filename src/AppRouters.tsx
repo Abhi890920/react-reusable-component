@@ -3,6 +3,8 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import FormDemo from "./pages/FormDemo";
 import TableDemo from "./pages/TableDemo";
+import ButtonExamples from "./component/ButtonExamples";
+import FileUploadDemo from "./pages/FileUploadDemo";
 
 
 function AppRouters() {
@@ -12,6 +14,8 @@ function AppRouters() {
             <Route path="/about" element={<About />} />
             <Route path="/form-demo" element={<FormDemo />} />
             <Route path="/table-demo" element={<TableDemo />} />
+            <Route path="/button-examples" element={<ButtonExamples />} />
+            <Route path="/file-upload" element={<FileUploadDemo />} />
         </Routes>
     );
 }
