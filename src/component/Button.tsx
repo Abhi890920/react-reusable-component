@@ -1,90 +1,245 @@
 import React, { forwardRef } from 'react';
-import { classNames } from 'primereact/utils';
-import { Button as PrimeButton } from 'primereact/button';
-// import './Button.scss';
+import { Button as PrimeButton, ButtonProps as PrimeButtonProps } from 'primereact/button';
+import { SplitButton, SplitButtonProps } from 'primereact/splitbutton';
+import { SpeedDial, SpeedDialProps } from 'primereact/speeddial';
+import { MenuItem } from 'primereact/menuitem';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'light' | 'dark' | 'link';
-export type ButtonSize = 'small' | 'medium' | 'large';
+// Type definitions
+export type ButtonType = 'button' | 'split' | 'speeddial';
+export type RadiusType = 'circle' | 'semi-circle' | 'quarter-circle';
+export type SeverityType = 'warning' | 'success' | 'info' | 'secondary' | 'contrast' | 'danger' | 'help';
+export type ButtonSize = 'small' | 'normal' | 'large';
+export type ButtonVariant = 'filled' | 'outlined' | 'text' | 'link';
 
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-    /** The variant/style of the button */
-    variant?: ButtonVariant;
-    /** The size of the button */
-    size?: ButtonSize;
-    label?: string;
-    /** Icon to show before the button text */
-    startIcon?: string;
-    /** Icon to show after the button text */
-    endIcon?: string;
-    /** Whether the button is in loading state */
-    loading?: boolean;
-    /** Text to show when loading */
-    loadingText?: string;
-    /** Whether the button takes full width of parent */
-    fullWidth?: boolean;
-    /** Whether the button is outlined */
-    outlined?: boolean;
-    /** Whether the button has rounded corners */
-    rounded?: boolean;
-    /** Whether the button is disabled */
-    disabled?: boolean;
-    /** Whether the button is text only (no background) */
-    text?: boolean;
-    /** Whether to raise the button with shadow */
-    raised?: boolean;
-    /** The severity of the button (matches PrimeReact severities) */
-    severity?: 'success' | 'info' | 'warning' | 'danger' | 'secondary' | 'help';
-    /** Children elements */
-    children?: React.ReactNode;
+// Base props that are common to all button types
+interface BaseButtonProps {
+  /** Type of button to render */
+  btnType?: ButtonType;
+  /** Button label text */
+  label?: string;
+  /** Icon class name (e.g., 'pi pi-check') */
+  icon?: string;
+  /** Tooltip text */
+  tooltip?: string;
+  /** Button severity/color variant */
+  severity?: SeverityType;
+  /** Button size */
+  size?: ButtonSize;
+  /** Button variant/style */
+  variant?: ButtonVariant;
+  /** Custom CSS class name */
+  className?: string;
+  /** Custom inline styles */
+  style?: React.CSSProperties;
+  /** Whether the button is disabled */
+  disabled?: boolean;
+  /** Whether the button is in loading state */
+  loading?: boolean;
+  /** Loading icon class name */
+  loadingIcon?: string;
+  /** Whether the button should have rounded corners */
+  rounded?: boolean;
+  /** Whether the button should be raised (with shadow) */
+  raised?: boolean;
+  /** Whether the button should have a border */
+  outlined?: boolean;
+  /** Whether the button should be transparent */
+  text?: boolean;
+  /** Whether the button should be a link style */
+  link?: boolean;
+  /** Whether the button should be plain (no styling) */
+  plain?: boolean;
+  /** Additional data attributes */
+  'data-testid'?: string;
+  'aria-label'?: string;
 }
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
-    variant = 'primary',
-    size = 'medium',
-    label,
-    startIcon,
-    endIcon,
-    loading = false,
-    loadingText,
-    fullWidth = false,
-    outlined = false,
-    rounded = false,
-    disabled = false,
-    text = false,
-    raised = false,
-    severity,
-    className,
-    children,
-    ...props
-}, ref) => {
-    const buttonClasses = classNames(
-        'custom-button',
-        `button-${variant}`,
-        `button-${size}`,
-        {
-            'button-full-width': fullWidth,
-            'p-button-outlined': outlined,
-            'p-button-rounded': rounded,
-            'p-button-text': text,
-            'p-button-raised': raised,
-        },
-        className
-    );
+// Props specific to clickable buttons (regular and split)
+interface ClickableButtonProps extends BaseButtonProps {
+  /** Click event handler */
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  /** Menu items for split button or speed dial */
+  model?: MenuItem[];
+  /** Whether the button should submit a form */
+  type?: 'button' | 'submit' | 'reset';
+  /** Form element to submit */
+  form?: string;
+  /** Whether the button should have focus on mount */
+  autoFocus?: boolean;
+}
 
+// Props specific to SpeedDial
+interface SpeedDialButtonProps extends BaseButtonProps {
+  speedtype?: 'quarter-circle' | 'semi-circle' | 'circle';
+  /** Menu items for speed dial */
+  model?: MenuItem[];
+  /** Direction of the speed dial */
+  direction?: SpeedDialProps['direction'];
+  /** Radius of the speed dial */
+  radius?: number;
+  /** Icon to show when speed dial is open */
+  showIcon?: string;
+  /** Icon to show when speed dial is closed */
+  hideIcon?: string;
+  /** Whether to show a mask overlay */
+  mask?: boolean;
+  /** Transition delay in milliseconds */
+  transitionDelay?: number;
+  /** Type of radius layout */
+  radiusType?: RadiusType;
+  /** Whether the speed dial is visible */
+  visible?: boolean;
+  /** Callback when speed dial becomes visible */
+  onShow?: () => void;
+  /** Callback when speed dial becomes hidden */
+  onHide?: () => void;
+}
+
+// Union type for all button props
+type ButtonProps = ClickableButtonProps & SpeedDialButtonProps;
+
+// Helper function to get button size class
+const getSizeClass = (size?: ButtonSize): string => {
+  switch (size) {
+    case 'small': return 'p-button-sm';
+    case 'large': return 'p-button-lg';
+    default: return '';
+  }
+};
+
+// Helper function to get button variant class
+const getVariantClass = (variant?: ButtonVariant, outlined?: boolean, text?: boolean, link?: boolean): string => {
+  if (outlined) return 'p-button-outlined';
+  if (text) return 'p-button-text';
+  if (link) return 'p-button-link';
+  
+  switch (variant) {
+    case 'outlined': return 'p-button-outlined';
+    case 'text': return 'p-button-text';
+    case 'link': return 'p-button-link';
+    default: return '';
+  }
+};
+
+// Helper function to build className
+const buildClassName = (baseClass: string, props: BaseButtonProps): string => {
+  const classes = [baseClass];
+  
+  if (props.className) classes.push(props.className);
+  if (props.size) classes.push(getSizeClass(props.size));
+  if (props.variant || props.outlined || props.text || props.link) {
+    classes.push(getVariantClass(props.variant, props.outlined, props.text, props.link));
+  }
+  if (props.rounded) classes.push('p-button-rounded');
+  if (props.raised) classes.push('p-button-raised');
+  if (props.plain) classes.push('p-button-plain');
+  
+  return classes.filter(Boolean).join(' ');
+};
+
+const Button = forwardRef<any, ButtonProps>(({
+  btnType = 'button',
+  label,
+  icon,
+  onClick,
+  model = [],
+  direction = 'up',
+  radius,
+  showIcon = 'pi pi-bars',
+  hideIcon = 'pi pi-times',
+  tooltip,
+  className,
+  style,
+  mask,
+  transitionDelay,
+  radiusType,
+  size,
+  variant,
+  disabled = false,
+  loading = false,
+  loadingIcon = 'pi pi-spinner pi-spin',
+  rounded,
+  raised,
+  outlined,
+  text,
+  link,
+  plain,
+  type = 'button',
+  form,
+  autoFocus,
+  visible,
+  speedtype,
+  onShow,
+  onHide,
+  'data-testid': dataTestId,
+  'aria-label': ariaLabel,
+  ...rest
+}, ref) => {
+  // Common props for all button types
+  const commonProps = {
+    className: buildClassName('', { className, size, variant, rounded, raised, outlined, text, link, plain }),
+    style,
+    disabled: disabled || loading,
+    'data-testid': dataTestId,
+    'aria-label': ariaLabel,
+  };
+
+  // Render SplitButton
+  if (btnType === 'split') {
     return (
-        <PrimeButton
-            {...props}
-            ref={ref}
-            label={label}
-            className={buttonClasses}
-            disabled={disabled || loading}
-            loading={loading}
-            loadingIcon="pi pi-spinner pi-spin"
-            icon={startIcon}
-            iconPos={endIcon ? 'right' : 'left'}
-            severity={severity}
+      <SplitButton
+        label={label}
+        icon={loading ? loadingIcon : icon}
+        onClick={onClick}
+        model={model}
+        tooltip={tooltip}
+        autoFocus={autoFocus}
+        {...commonProps}
+        {...rest}
+      />
+    );
+  }
+
+  // Render SpeedDial
+  if (btnType === 'speeddial') {
+    return (
+
+        <SpeedDial
+          model={model}
+          direction={direction}
+          radius={radius}
+          showIcon={showIcon}
+          hideIcon={hideIcon}
+          visible={visible}
+          onShow={onShow}
+          onHide={onHide}
+          className={commonProps.className}
+          type={speedtype}
+          style={style}
+          mask={mask}
+          transitionDelay={transitionDelay}
+          {...rest}
         />
     );
+  }
+
+  // Render regular Button
+  return (
+    <PrimeButton
+      ref={ref}
+      label={label}
+      icon={loading ? loadingIcon : icon}
+      onClick={onClick}
+      tooltip={tooltip}
+      type={type}
+      form={form}
+      autoFocus={autoFocus}
+      {...commonProps}
+      {...rest}
+    />
+  );
 });
 
 Button.displayName = 'Button';
+
+export default Button;

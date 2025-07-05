@@ -1,8 +1,8 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { PrimeReactProvider } from "primereact/api";
-import { Toast } from 'primereact/toast';
 import { Provider } from "react-redux";
+import { ToastProvider } from './context/ToastContext';
 import App from "./App";
 import store from "./store";
 import './assets/themes/material/material-light/compact/deeppurple/theme.scss';
@@ -13,8 +13,9 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <PrimeReactProvider>
       <Provider store={store}>
-        <Toast />
-        <App />
+        <ToastProvider>
+          <App />
+        </ToastProvider>
       </Provider>
     </PrimeReactProvider>
   </StrictMode>
